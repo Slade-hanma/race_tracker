@@ -27,7 +27,6 @@ Future<List<Participant>> getParticipants() async {
       }
 
       if (data is Map<String, dynamic>) {
-        // Firebase structured as: { "1": {..}, "2": {..} }
         final participants = data.entries
             .map((entry) {
               final participantData = Map<String, dynamic>.from(entry.value);
@@ -37,7 +36,6 @@ Future<List<Participant>> getParticipants() async {
 
         return participants;
       } else if (data is List) {
-        // Firebase structured as: [ {...}, {...} ]
         final participants = data
             .where((item) => item != null)
             .map((item) =>

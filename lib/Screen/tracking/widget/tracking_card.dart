@@ -33,53 +33,57 @@ class ParticipantTrackingCard extends StatelessWidget {
     final result = selectionProvider.getResult(participant.bibNumber);
 
     return GestureDetector(
-      onTap: () {
-        final result = Result(
-          participant: participant,
-          race: race,
-          finishTime: currentTime,
-        );
-        context.read<SelectionProvider>().toggleResult(result);
-      },
-
-      child: Card(
-        color: isSelected ? Colors.green.shade100 : null,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 4,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+  onTap: () {
+    final result = Result(
+      participant: participant,
+      race: race,
+      finishTime: currentTime,
+    );
+    context.read<SelectionProvider>().toggleResult(result);
+  },
+  child: SizedBox(
+    height: 50, // or whatever fixed height you want
+    width: double.infinity, // fills the Grid tile
+    child: Card(
+      color: isSelected ? Colors.green.shade100 : null,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(1),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Bib #: ${participant.bibNumber}',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 1),
+            TimeDisplay(
+              time: isSelected && result != null
+                  ? result.finishTime
+                  : currentTime,
+            ),
+            const SizedBox(height: 1),
+            if (isSelected && result != null)
               Text(
-                'Bib #: ${participant.bibNumber}',
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                'Selected Time:\n${result.finishTime}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 14),
               ),
-              const SizedBox(height: 10),
-              TimeDisplay(
-                time: isSelected && result != null
-                    ? result.finishTime
-                    : currentTime,
+            const SizedBox(height: 1),
+            Text(
+              isSelected ? 'Selected' : 'Tap to select',
+              style: TextStyle(
+                color: isSelected ? Colors.green.shade700 : Colors.black54,
+                fontWeight: FontWeight.w500,
               ),
-              const SizedBox(height: 10),
-              if (isSelected && result != null)
-                Text(
-                  'Selected Time:\n${result.finishTime}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14),
-                ),
-              const SizedBox(height: 10),
-              Text(
-                isSelected ? 'Selected' : 'Tap to select',
-                style: TextStyle(
-                  color: isSelected ? Colors.green.shade700 : Colors.black54,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
+    ),
+  ),
+);
+
   }
 }

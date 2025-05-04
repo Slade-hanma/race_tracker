@@ -54,7 +54,7 @@ class SubmitFooter extends StatelessWidget {
                   return Text(
                     stopwatchTime,
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: 50,
                       fontWeight: FontWeight.bold,
                     ),
                   );

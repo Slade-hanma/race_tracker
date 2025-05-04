@@ -3,7 +3,8 @@ import '../model/participant_model.dart'; // Make sure this import is correct
 import '../repository/participant_repo.dart';
 
 class ParticipantProvider with ChangeNotifier {
-  final ParticipantRepository _repository;
+   final ParticipantRepository _repository;
+  bool _disposed = false; // Track if the provider has been disposed
 
   List<Participant> _participants = [];
 
@@ -11,6 +12,18 @@ class ParticipantProvider with ChangeNotifier {
 
   List<Participant> get participants => _participants;
 
+  @override
+  void dispose() {
+    _disposed = true;  // Set the flag when disposed
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
+  }
   // Fetch participants from repository
   Future<void> fetchParticipants() async {
     _participants = await _repository.getParticipants();
