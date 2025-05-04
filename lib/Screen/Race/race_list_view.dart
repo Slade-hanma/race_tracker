@@ -7,7 +7,7 @@ import '../home/raceTracker.dart';
 import 'race_status.dart';
 
 class RacesListView extends StatelessWidget {
-    final bool isManager;
+  final bool isManager;
 
   const RacesListView({Key? key, required this.isManager}) : super(key: key);
 
@@ -33,48 +33,102 @@ class RacesListView extends StatelessWidget {
         }
 
         return Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: ListView.builder(
             itemCount: races.length,
             itemBuilder: (context, index) {
               final race = races[index];
+              final raceDate = race.date; // Format if needed
+              final raceTime = race.Time;
+
               return GestureDetector(
                 onTap: () {
-                  final destination = isManager
-                      ? RaceScreen(race: race)
-                      : RaceTracker(race: race);
+                  final destination =
+                      isManager
+                          ? RaceScreen(race: race)
+                          : RaceTracker(race: race);
 
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => destination),
                   );
                 },
-                child: Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8.0),
-                  elevation: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          race.name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF5B6FC2), // Blue-purple background
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(0, 4),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              race.name,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Text('Type: ${race.raceType}'),
-                        Text('Distance: ${race.distance} km'),
-                        Text('Date & Time: ${race.date} ${race.Time}'),
-                        SizedBox(height: 12),
-                        RaceStatusWidget(
-                          raceName: race.name,
-                          isManager: isManager,
-                        ),
-                      ],
-                    ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  offset: Offset(0, 2),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: RaceStatusWidget(
+                              raceName: race.name,
+                              isManager: isManager,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        '${race.distance} km (${race.raceType})',
+                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            raceTime,
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                          Text(
+                            '$raceDate ',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      // RaceStatusWidget(
+                      //   raceName: race.name,
+                      //   isManager: isManager,
+                      // ),
+                    ],
                   ),
                 ),
               );
@@ -84,5 +138,4 @@ class RacesListView extends StatelessWidget {
       },
     );
   }
-
 }

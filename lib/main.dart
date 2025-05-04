@@ -10,7 +10,6 @@ import '../provider/result_provider.dart';
 import '../provider/race_provider.dart';
 import '../provider/race_status_provider.dart';
 
-
 import 'repository/Mock_Repo/firebase_base_repo.dart';
 import 'repository/Mock_Repo/firebase_participant_repo.dart';
 import 'repository/Mock_Repo/firebase_race_repo.dart';
@@ -25,7 +24,8 @@ void main() async {
   const FirebaseOptions firebaseOptions = FirebaseOptions(
     apiKey: 'AIzaSyBbolAsa1X3nLxSp7txcrB34XhFphDIUEE',
     authDomain: 'race-tracker-c94f0.firebaseapp.com',
-    databaseURL: 'https://race-tracker-c94f0-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://race-tracker-c94f0-default-rtdb.asia-southeast1.firebasedatabase.app',
     projectId: 'race-tracker-c94f0',
     storageBucket: 'race-tracker-c94f0.firebasestorage.app',
     messagingSenderId: '160782640147',
@@ -38,18 +38,28 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ParticipantProvider(FirebaseParticipantRepo())),
+        ChangeNotifierProvider(
+          create: (_) => ParticipantProvider(FirebaseParticipantRepo()),
+        ),
         ChangeNotifierProvider(create: (_) => RaceProvider(FirebaseRaceRepo())),
-        ChangeNotifierProvider(create: (_) => ResultProvider(resultRepo: FirebaseResultRepo())),
+        ChangeNotifierProvider(
+          create: (_) => ResultProvider(resultRepo: FirebaseResultRepo()),
+        ),
         ChangeNotifierProvider(create: (_) => SelectionProvider()),
-        ChangeNotifierProvider(create: (_) => RaceStatusProvider(FirebaseRaceStatusRepo())),
-        ChangeNotifierProvider(create: (_) => StopwatchProvider(FirebaseSwatchRepo(FirebaseBaseRepo()))),
-        ChangeNotifierProvider(create: (_) => NotificationProvider()), // <<--- ADD THIS
-
+        ChangeNotifierProvider(
+          create: (_) => RaceStatusProvider(FirebaseRaceStatusRepo()),
+        ),
+        ChangeNotifierProvider(
+          create:
+              (_) => StopwatchProvider(FirebaseSwatchRepo(FirebaseBaseRepo())),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => NotificationProvider(),
+        ), // <<--- ADD THIS
       ],
-      child:  MyApp(),
+      child: MyApp(),
     ),
-    );  
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -58,6 +68,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        // appBar: AppBar(
+        //   title: Text('Race Tracker', style: TextStyle(color: Colors.white)),
+        //   backgroundColor: Color(0xFF5C6BC0),
+        // ),
         body: AuthenticationScreen(),
         
       ),

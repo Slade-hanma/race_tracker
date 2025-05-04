@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/notification_provider.dart';
 import '../Race/race_list_view.dart';
-import 'widgets/notification_screen.dart'; // <-- Import this too
+import 'widgets/notification_screen.dart'; // <-- Make sure this import is correct
 
 class AuthenticationScreen extends StatefulWidget {
   @override
@@ -20,25 +20,23 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Card(
-                child: ListTile(
-                  title: const Text("Race Manager"),
-                  onTap: () {
-                    setState(() {
-                      isManager = true;
-                    });
-                  },
-                ),
+              RoleSelectionCard(
+                icon: Icons.person,
+                title: "Race Manager",
+                onTap: () {
+                  setState(() {
+                    isManager = true;
+                  });
+                },
               ),
-              Card(
-                child: ListTile(
-                  title: const Text("Race Tracker"),
-                  onTap: () {
-                    setState(() {
-                      isManager = false;
-                    });
-                  },
-                ),
+              RoleSelectionCard(
+                icon: Icons.alarm_add_outlined,
+                title: "Race Tracker",
+                onTap: () {
+                  setState(() {
+                    isManager = false;
+                  });
+                },
               ),
             ],
           ),
@@ -47,9 +45,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text(isManager! ? "Race Manager" : "Race Tracker"),
+          title: Text(
+            isManager! ? "Race Manager" : "Race Tracker",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xFF5C6BC0),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
               setState(() {
                 isManager = null;
@@ -62,11 +64,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 return Stack(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.notifications),
+                      icon: const Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const NotificationScreen()),
+                          MaterialPageRoute(
+                            builder: (_) => const NotificationScreen(),
+                          ),
                         );
                       },
                     ),
@@ -103,5 +110,51 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         body: RacesListView(isManager: isManager!),
       );
     }
+  }
+}
+
+class RoleSelectionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const RoleSelectionCard({
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 400,
+      height: 141.45,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF5C6BC0),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 84, color: Colors.white),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20.27,
+                fontFamily: 'ABeeZee',
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
