@@ -4,7 +4,8 @@ import '../../provider/result_provider.dart';
 import '../../model/result_model.dart';
 
 class ResultsListView extends StatelessWidget {
-  final bool isManager; // Passed to the constructor to determine if the user is a manager
+  final bool
+  isManager; // Passed to the constructor to determine if the user is a manager
 
   ResultsListView({required this.isManager});
 
@@ -30,18 +31,41 @@ class ResultsListView extends StatelessWidget {
           child: Column(
             children: [
               // Header Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
-                  Expanded(child: Center(child: Text('Rank'))),
-                  Expanded(child: Center(child: Text('BIB'))),
-                  Expanded(child: Center(child: Text('Name'))),
-                  Expanded(child: Center(child: Text('Race Name'))), // Race Name Column
-                  Expanded(child: Center(child: Text('Race Date'))), // Race Date Column
-                  Expanded(child: Center(child: Text('Finish Time'))),
-                ],
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(
+                    255,
+                    203,
+                    200,
+                    200,
+                  ).withOpacity(0.69),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xB09E9E9E), // grey with 69% opacity
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: const [
+                    Expanded(child: Center(child: Text('Rank'))),
+                    Expanded(child: Center(child: Text('BIB'))),
+                    Expanded(child: Center(child: Text('Name'))),
+                    Expanded(
+                      child: Center(child: Text('Race Name')),
+                    ), // Race Name Column
+                    Expanded(
+                      child: Center(child: Text('Race Date')),
+                    ), // Race Date Column
+                    Expanded(child: Center(child: Text('Finish Time'))),
+                  ],
+                ),
               ),
-              const Divider(),
               // Results List
               Expanded(
                 child: ListView.builder(
@@ -51,20 +75,59 @@ class ResultsListView extends StatelessWidget {
 
                     return Container(
                       margin: const EdgeInsets.symmetric(vertical: 5),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(color: Color(0xD45C6BC0)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Expanded(child: Center(child: Text('${index + 1}'))),
-                          Expanded(child: Center(child: Text(result.participant.bibNumber))),
-                          Expanded(child: Center(child: Text(result.participant.name))),
-                          Expanded(child: Center(child: Text(result.race.name))), // Race Name
-                          Expanded(child: Center(child: Text(result.race.date.toString()))), // Race Date
-                          Expanded(child: Center(child: Text(result.finishTime))),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                '${index + 1} ',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                result.participant.bibNumber,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                result.participant.name,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                result.race.name,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ), // Race Name
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                result.race.date.toString(),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ), // Race Date
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                result.finishTime,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     );

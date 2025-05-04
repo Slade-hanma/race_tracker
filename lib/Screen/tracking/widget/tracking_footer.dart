@@ -4,20 +4,22 @@ import 'package:provider/provider.dart';
 import '../../../provider/result_provider.dart';
 import '../../../provider/selection_provider.dart';
 import '../../../provider/stopwatch_provider.dart';
-import '../../../provider/notification_provider.dart';  // Import the NotificationProvider
+import '../../../provider/notification_provider.dart'; // Import the NotificationProvider
 
 class SubmitFooter extends StatelessWidget {
   final StopwatchProvider stopwatchProvider;
 
-  const SubmitFooter({Key? key, required this.stopwatchProvider}) : super(key: key);
+  const SubmitFooter({Key? key, required this.stopwatchProvider})
+    : super(key: key);
 
   void submitAll(BuildContext context) {
     final selectionProvider = context.read<SelectionProvider>();
     final resultProvider = context.read<ResultProvider>();
-    final notificationProvider = context.read<NotificationProvider>(); // Access NotificationProvider
+    final notificationProvider =
+        context.read<NotificationProvider>(); // Access NotificationProvider
 
     for (final result in selectionProvider.selectedResults) {
-      resultProvider.addResult(result);  // This now triggers notification
+      resultProvider.addResult(result); // This now triggers notification
     }
 
     selectionProvider.clearSelections();
@@ -25,15 +27,15 @@ class SubmitFooter extends StatelessWidget {
     // Add notification after submitting the result
     notificationProvider.addNotification('Race results have been submitted.');
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Submitted to result list")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Submitted to result list")));
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedCount = context.watch<SelectionProvider>().selectedResults.length;
-
+    final selectedCount =
+        context.watch<SelectionProvider>().selectedResults.length;
     return Column(
       children: [
         if (selectedCount > 0)
@@ -44,6 +46,7 @@ class SubmitFooter extends StatelessWidget {
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(color: Color(0xFF5B6FC2)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -51,18 +54,30 @@ class SubmitFooter extends StatelessWidget {
               Consumer<StopwatchProvider>(
                 builder: (context, stopwatchProvider, _) {
                   final stopwatchTime = stopwatchProvider.displayTime;
+                  SizedBox(width: 500);
                   return Text(
                     stopwatchTime,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   );
                 },
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
+                ),
                 onPressed: selectedCount > 0 ? () => submitAll(context) : null,
-                child: const Text("Submit"),
+                child: const Text(
+                  "Submit",
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
             ],
           ),

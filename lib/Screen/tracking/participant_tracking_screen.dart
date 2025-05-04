@@ -22,7 +22,11 @@ class _TrackingScreenState extends State<TrackingScreen> {
   void initState() {
     super.initState();
     // Load participants from the provider
-    _fetchParticipantsFuture = Provider.of<ParticipantProvider>(context, listen: false).fetchParticipants();
+    _fetchParticipantsFuture =
+        Provider.of<ParticipantProvider>(
+          context,
+          listen: false,
+        ).fetchParticipants();
   }
 
   @override
@@ -31,13 +35,6 @@ class _TrackingScreenState extends State<TrackingScreen> {
     final participantProvider = context.watch<ParticipantProvider>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Tracking Participants"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
       body: FutureBuilder<void>(
         future: _fetchParticipantsFuture,
         builder: (context, snapshot) {
@@ -46,7 +43,9 @@ class _TrackingScreenState extends State<TrackingScreen> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text("Error loading participants: ${snapshot.error}"));
+            return Center(
+              child: Text("Error loading participants: ${snapshot.error}"),
+            );
           }
 
           final participants = participantProvider.participants;

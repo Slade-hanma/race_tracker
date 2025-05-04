@@ -9,7 +9,8 @@ class TimeDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       time,
-      style: TextStyle(fontSize: 48),
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 20, color: Colors.white),
     );
   }
 }
