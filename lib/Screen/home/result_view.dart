@@ -4,10 +4,23 @@ import '../../provider/result_provider.dart';
 import '../../model/result_model.dart';
 
 class ResultsListView extends StatelessWidget {
-  final bool
-  isManager; // Passed to the constructor to determine if the user is a manager
+  final bool isManager;
 
   ResultsListView({required this.isManager});
+
+  String _formatRank(int index, String finishTime) {
+    if (finishTime == 'N/A') return 'N/A';
+    switch (index + 1) {
+      case 1:
+        return '1st';
+      case 2:
+        return '2nd';
+      case 3:
+        return '3rd';
+      default:
+        return '${index + 1}th';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,116 +39,104 @@ class ResultsListView extends StatelessWidget {
 
         final results = snapshot.data!;
 
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              // Header Row
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 5),
-                padding: const EdgeInsets.all(15),
+        return Column(
+          children: [
+            const SizedBox(height: 8),
+            Material(
+              elevation: 2,
+              borderRadius: BorderRadius.circular(6),
+              child: Container(
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(
-                    255,
-                    203,
-                    200,
-                    200,
-                  ).withOpacity(0.69),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xB09E9E9E), // grey with 69% opacity
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
+                  color: const Color(0xFFE0E0E0),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Center(
+                          child: Text('Rank',
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w600))),
+                    ),
+                    Expanded(
+                      child: Center(
+                          child: Text('Bib',
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w600))),
+                    ),
+                    Expanded(
+                      child: Center(
+                          child: Text('Participants Name',
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w600))),
+                    ),
+                    Expanded(
+                      child: Center(
+                          child: Text('Swim Time',
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w600))),
                     ),
                   ],
                 ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const [
-                    Expanded(child: Center(child: Text('Rank'))),
-                    Expanded(child: Center(child: Text('BIB'))),
-                    Expanded(child: Center(child: Text('Name'))),
-                    Expanded(
-                      child: Center(child: Text('Race Name')),
-                    ), // Race Name Column
-                    Expanded(
-                      child: Center(child: Text('Race Date')),
-                    ), // Race Date Column
-                    Expanded(child: Center(child: Text('Finish Time'))),
-                  ],
-                ),
               ),
-              // Results List
-              Expanded(
-                child: ListView.builder(
-                  itemCount: results.length,
-                  itemBuilder: (context, index) {
-                    final result = results[index];
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: ListView.builder(
+                itemCount: results.length,
+                itemBuilder: (context, index) {
+                  final result = results[index];
+                  final rank = _formatRank(index, result.finishTime);
 
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5),
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(color: Color(0xD45C6BC0)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                '${index + 1} ',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                result.participant.bibNumber,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                result.participant.name,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                result.race.name,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ), // Race Name
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                result.race.date.toString(),
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ), // Race Date
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                result.finishTime,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF7986CB),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Center(
+                              child: Text(rank,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14))),
+                        ),
+                        Expanded(
+                          child: Center(
+                              child: Text(result.participant.bibNumber,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14))),
+                        ),
+                        Expanded(
+                          child: Center(
+                              child: Text(result.participant.name,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14))),
+                        ),
+                        Expanded(
+                          child: Center(
+                              child: Text(result.finishTime,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14))),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );

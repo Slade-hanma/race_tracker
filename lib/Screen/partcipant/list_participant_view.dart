@@ -46,67 +46,78 @@ class _ListScreenState extends State<ListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Participants"),
+         automaticallyImplyLeading: false,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF64B5F6),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 16),
+              ),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => ParticipantForm(
+                    isEditing: false,
+                    onSubmit: participantProvider.addParticipant,
+                    participantProvider: participantProvider,
+                  ),
+                ));
+              },
+              child: Text(
+                'Add',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ],
       ),
       body: FutureBuilder<void>(
         future: _fetchParticipantsFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) return Center(child: CircularProgressIndicator());
-          if (snapshot.hasError) return Center(child: Text("Error: ${snapshot.error}"));
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return Center(child: CircularProgressIndicator());
+          if (snapshot.hasError)
+            return Center(child: Text("Error: ${snapshot.error}"));
 
           final participants = participantProvider.participants;
 
-          return Column(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (_) => ParticipantForm(
-                      isEditing: false,
-                      onSubmit: participantProvider.addParticipant,
-                      participantProvider: participantProvider,
-                    ),
-                  ));
+          return ListView.builder(
+            itemCount: participants.length,
+            itemBuilder: (context, index) {
+              final participant = participants[index];
+              return Dismissible(
+                key: Key(participant.id.toString()),
+                direction: DismissDirection.endToStart,
+                confirmDismiss: (_) async {
+                  _confirmDelete(context, participant, participantProvider);
+                  return false;
                 },
-                child: Text('Add New Participant'),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: participants.length,
-                  itemBuilder: (context, index) {
-                    final participant = participants[index];
-                    return Dismissible(
-                      key: Key(participant.id.toString()),
-                      direction: DismissDirection.endToStart,
-                      confirmDismiss: (_) async {
-                        _confirmDelete(context, participant, participantProvider);
-                        return false; // Don't auto dismiss until confirmed manually
-                      },
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Icon(Icons.delete, color: Colors.white),
-                      ),
-                      child: GestureDetector(
-                        onTap: () async {
-                          final updatedParticipant = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ParticipantProfileScreen(participant: participant),
-                            ),
-                          );
-                          if (updatedParticipant != null) {
-                            participantProvider.updateParticipant(updatedParticipant);
-                          }
-                        },
-                        child: ParticipantCard(participant: participant),
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Icon(Icons.delete, color: Colors.white),
+                ),
+                child: GestureDetector(
+                  onTap: () async {
+                    final updatedParticipant = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ParticipantProfileScreen(participant: participant),
                       ),
                     );
+                    if (updatedParticipant != null) {
+                      participantProvider.updateParticipant(updatedParticipant);
+                    }
                   },
+                  child: ParticipantCard(participant: participant),
                 ),
-              ),
-            ],
+              );
+            },
           );
         },
       ),
