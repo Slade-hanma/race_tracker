@@ -59,7 +59,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
-                    mainAxisExtent: 100, 
+                    mainAxisExtent: 100,
                     mainAxisSpacing: 10,
                     childAspectRatio: 3 / 4,
                   ),

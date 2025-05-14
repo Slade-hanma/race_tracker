@@ -11,29 +11,36 @@ class RaceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isManager = true; // or get the value dynamically
+    final bool isManager = true;
 
     return DefaultTabController(
-      length: 3, // Only 3 tabs now
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Race Management"),
+          backgroundColor: const Color(0xFF5C6BC0), // Indigo color
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text(
+            "Aquathons",
+            style: TextStyle(color: Colors.white),
+          ),
           bottom: const TabBar(
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white,
+            indicatorColor: Colors.white,
             tabs: [
-              Tab(icon: Icon(Icons.timer), text: "Stopwatch"),
-              Tab(icon: Icon(Icons.list), text: "Participants"),
-              Tab(icon: Icon(Icons.list_alt), text: "Results"),
+              Tab(text: "Stop Watch"),
+              Tab(text: "Participant"),
+              Tab(text: "Result"),
             ],
           ),
         ),
         body: TabBarView(
-            children: [
-              StopwatchWidget(),
-              ListScreen(),
-              // Pass the isManager parameter here
-              ResultsListView(isManager: isManager),
-            ],
-          ),
+          children: [
+            StopwatchWidget(),
+            ListScreen(),
+            ResultsListView(isManager: isManager),
+          ],
+        ),
       ),
     );
   }

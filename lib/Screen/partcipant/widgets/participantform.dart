@@ -28,6 +28,8 @@ class _ParticipantFormState extends State<ParticipantForm> {
   late String school;
   late String bibNumber;
 
+  late TextEditingController dobController;
+
   @override
   void initState() {
     super.initState();
@@ -36,83 +38,159 @@ class _ParticipantFormState extends State<ParticipantForm> {
     dateOfBirth = widget.participant?.dateOfBirth ?? DateTime.now();
     school = widget.participant?.school ?? '';
     bibNumber = widget.participant?.bibNumber ?? '';
+    dobController = TextEditingController(
+      text: "${dateOfBirth.year}-${dateOfBirth.month.toString().padLeft(2, '0')}-${dateOfBirth.day.toString().padLeft(2, '0')}",
+    );
+  }
+
+  @override
+  void dispose() {
+    dobController.dispose();
+    super.dispose();
+  }
+
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      filled: true,
+      fillColor: Colors.grey.shade100,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.grey.shade400),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.isEditing ? "Update Participant" : "Add Participant"),
+        backgroundColor: const Color(0xFF5C6BC0),
+        title: Text(
+          widget.isEditing ? "Update Participant" : "Add Participant",
+          style: const TextStyle(color: Colors.white), // White title text
+        ),
+        iconTheme: const IconThemeData(color: Colors.white), // White back arrow
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                initialValue: name,
-                decoration: InputDecoration(labelText: 'Name'),
-                validator: (value) => value!.isEmpty ? 'Please enter your name' : null,
-                onSaved: (value) => name = value!,
+      body: SingleChildScrollView(
+        child: Center(
+          child: SizedBox(
+            height: 400, // Taller form
+            width: 320,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      initialValue: name,
+                      decoration: _inputDecoration('Name*'),
+                      validator: (value) => value!.isEmpty ? 'Please enter name' : null,
+                      onSaved: (value) => name = value!,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: dobController,
+                            readOnly: true,
+                            decoration: _inputDecoration('Date of Birth'),
+                            onTap: () async {
+                              DateTime? picked = await showDatePicker(
+                                context: context,
+                                initialDate: dateOfBirth,
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime.now(),
+                              );
+                              if (picked != null) {
+                                setState(() {
+                                  dateOfBirth = picked;
+                                  dobController.text =
+                                      "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: TextFormField(
+                            initialValue: sex,
+                            decoration: _inputDecoration('Gender*'),
+                            validator: (value) => value!.isEmpty ? 'Please enter gender' : null,
+                            onSaved: (value) => sex = value!,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: TextFormField(
+                            initialValue: school,
+                            decoration: _inputDecoration('School'),
+                            validator: (value) => value!.isEmpty ? 'Please enter school' : null,
+                            onSaved: (value) => school = value!,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: TextFormField(
+                            initialValue: bibNumber,
+                            decoration: _inputDecoration('Bib Number'),
+                            validator: (value) => value!.isEmpty ? 'Please enter bib number' : null,
+                            onSaved: (value) => bibNumber = value!,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF5C6BC0),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            final newParticipant = Participant(
+                              id: widget.isEditing
+                                  ? widget.participant!.id
+                                  : widget.participantProvider.getNextId(),
+                              name: name,
+                              sex: sex,
+                              dateOfBirth: dateOfBirth,
+                              school: school,
+                              bibNumber: bibNumber,
+                            );
+                            widget.onSubmit(newParticipant);
+                            Navigator.pop(context, newParticipant);
+                          }
+                        },
+                        child: Text(
+                          widget.isEditing ? 'Update Participant' : 'Add Participant',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              TextFormField(
-                initialValue: sex,
-                decoration: InputDecoration(labelText: 'Sex'),
-                validator: (value) => value!.isEmpty ? 'Please enter your sex' : null,
-                onSaved: (value) => sex = value!,
-              ),
-              TextFormField(
-                controller: TextEditingController(text: dateOfBirth.toIso8601String().split('T')[0]),
-                decoration: InputDecoration(labelText: 'Date of Birth'),
-                readOnly: true,
-                onTap: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: dateOfBirth,
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-                  if (picked != null) setState(() => dateOfBirth = picked);
-                },
-              ),
-              TextFormField(
-                initialValue: school,
-                decoration: InputDecoration(labelText: 'School'),
-                validator: (value) => value!.isEmpty ? 'Please enter your school' : null,
-                onSaved: (value) => school = value!,
-              ),
-              TextFormField(
-                initialValue: bibNumber,
-                decoration: InputDecoration(labelText: 'Bib Number'),
-                validator: (value) => value!.isEmpty ? 'Please enter your bib number' : null,
-                onSaved: (value) => bibNumber = value!,
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    Participant participant = Participant(
-                      id: widget.isEditing
-                          ? widget.participant!.id
-                          : widget.participantProvider.getNextId(),
-                      name: name,
-                      sex: sex,
-                      dateOfBirth: dateOfBirth,
-                      school: school,
-                      bibNumber: bibNumber,
-                    );
-
-                    widget.onSubmit(participant);
-
-                    Navigator.pop(context, participant);
-                  }
-                },
-                child: Text(widget.isEditing ? "Update Participant" : "Add Participant"),
-              ),
-            ],
+            ),
           ),
         ),
       ),
