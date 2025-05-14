@@ -55,7 +55,7 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => NotificationProvider(),
-        ), // <<--- ADD THIS
+        ), 
       ],
       child: MyApp(),
     ),

@@ -19,8 +19,8 @@ class RaceScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: const Color(0xFF5C6BC0), // Indigo color
           iconTheme: const IconThemeData(color: Colors.white),
-          title: const Text(
-            "Aquathons",
+          title: Text(
+            race.raceType,
             style: TextStyle(color: Colors.white),
           ),
           bottom: const TabBar(

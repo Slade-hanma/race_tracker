@@ -4,7 +4,7 @@ import '../home/raceManagement.dart';
 import '../../provider/race_provider.dart';
 import 'package:provider/provider.dart';
 import '../home/raceTracker.dart';
-import 'race_status.dart';
+import '../home/race_status.dart';
 
 class RacesListView extends StatelessWidget {
   final bool isManager;
@@ -75,7 +75,7 @@ class RacesListView extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              race.name,
+                              race.raceType,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 22,
