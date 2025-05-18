@@ -1,3 +1,6 @@
+// lib/repositories/firebase_result_repo.dart
+
+
 import 'dart:convert';
 import '../../data/result_dto.dart';
 import '../../model/result_model.dart';
@@ -28,12 +31,30 @@ class FirebaseResultRepo extends FirebaseBaseRepo implements ResultRepository {
     }
   }
 
-  // New method to remove a result
   @override
-  Future<void> removeResult(String resultId) async {
-    final response = await delete('results/$resultId');
+  Future<void> removeResult(String bibNumber) async {
+    final response = await get('results');
     if (response.statusCode != 200) {
-      throw Exception('Failed to remove result');
+      throw Exception('Failed to fetch results for deletion');
+    }
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>?;
+
+    if (data == null) return;
+
+    // Find entry with matching participant.bibNumber
+    final entry = data.entries.firstWhere(
+      (entry) =>
+          entry.value['participant']['bibNumber'] == bibNumber,
+      orElse: () => throw Exception('Result not found'),
+    );
+
+    final key = entry.key;
+
+    final deleteResponse = await delete('results/$key');
+    if (deleteResponse.statusCode != 200) {
+      throw Exception('Failed to delete result');
     }
   }
+
 }

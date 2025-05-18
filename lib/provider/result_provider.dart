@@ -1,3 +1,6 @@
+// lib/providers/result_provider.dart
+
+
 import 'package:flutter/material.dart';
 import '../repository/result_repo.dart';
 import '../model/result_model.dart';
@@ -21,10 +24,10 @@ class ResultProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // New method to remove result
-  Future<void> removeResult(String resultId) async {
-    await resultRepo.removeResult(resultId);
-    _results.removeWhere((result) => result.participant.id == resultId); // Assuming participant ID is used as the result ID.
+  Future<void> removeResult(String bibNumber) async {
+    await resultRepo.removeResult(bibNumber);
+    _results.removeWhere((result) => result.participant.bibNumber == bibNumber);
     notifyListeners();
   }
+
 }

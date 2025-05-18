@@ -1,3 +1,5 @@
+// lib/dtos/race_status_dto.dart
+
 import '../model/race_status_enum.dart';
 
 class RaceStatusDTO {

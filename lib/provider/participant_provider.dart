@@ -1,3 +1,5 @@
+// lib/providers/participant_provider.dart
+
 import 'package:flutter/material.dart';
 import '../model/participant_model.dart'; // Make sure this import is correct
 import '../repository/participant_repo.dart';

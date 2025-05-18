@@ -1,3 +1,6 @@
+// lib/screen/participant/wodgets/list_participant_view.dart
+
+
 import 'package:flutter/material.dart';
 import '../../model/participant_model.dart';
 import 'widgets/participant_card.dart';

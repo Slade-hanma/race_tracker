@@ -1,4 +1,4 @@
-// lib/widgets/footer_widget.dart
+// lib/screen/tracking/widgets/footer_widget.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../provider/result_provider.dart';

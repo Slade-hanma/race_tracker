@@ -1,3 +1,6 @@
+// lib/main.dart
+
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,15 +25,15 @@ void main() async {
 
   // Add your Firebase configuration here
   const FirebaseOptions firebaseOptions = FirebaseOptions(
-    apiKey: 'AIzaSyBbolAsa1X3nLxSp7txcrB34XhFphDIUEE',
-    authDomain: 'race-tracker-c94f0.firebaseapp.com',
+    apiKey: 'AIzaSyCNdaw3wBxi_YRrC8s7DkAHnUoMU1zEXj0',
+    authDomain: 'race-tracking-app-c2e54.firebaseapp.com',
     databaseURL:
-        'https://race-tracker-c94f0-default-rtdb.asia-southeast1.firebasedatabase.app',
-    projectId: 'race-tracker-c94f0',
-    storageBucket: 'race-tracker-c94f0.firebasestorage.app',
-    messagingSenderId: '160782640147',
-    appId: '1:160782640147:web:01c7b41d03cb535b564be6',
-    measurementId: 'G-KTVQCLHFJ6',
+        'https://race-tracking-app-c2e54-default-rtdb.asia-southeast1.firebasedatabase.app',
+    projectId: 'race-tracking-app-c2e54',
+    storageBucket: 'race-tracking-app-c2e54.firebasestorage.app',
+    messagingSenderId: '120901742932',
+    appId: '1:120901742932:web:8cc8e202c9eb49634058c1',
+    measurementId: 'G-H7BY4HCQR4',
   );
 
   // Initialize Firebase with the provided options

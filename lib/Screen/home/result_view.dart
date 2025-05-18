@@ -87,55 +87,76 @@ class ResultsListView extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: ListView.builder(
-                itemCount: results.length,
-                itemBuilder: (context, index) {
-                  final result = results[index];
-                  final rank = _formatRank(index, result.finishTime);
+  child: ListView.builder(
+    itemCount: results.length,
+    itemBuilder: (context, index) {
+      final result = results[index];
+      final rank = _formatRank(index, result.finishTime);
 
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF7986CB),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Center(
-                              child: Text(rank,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14))),
-                        ),
-                        Expanded(
-                          child: Center(
-                              child: Text(result.participant.bibNumber,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14))),
-                        ),
-                        Expanded(
-                          child: Center(
-                              child: Text(result.participant.name,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14))),
-                        ),
-                        Expanded(
-                          child: Center(
-                              child: Text(result.finishTime,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14))),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+      return Dismissible(
+        key: Key(result.participant.bibNumber),
+        direction: DismissDirection.endToStart,
+        background: Container(
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          color: Colors.red,
+          child: const Icon(Icons.delete, color: Colors.white),
+        ),
+        confirmDismiss: (direction) async {
+          return await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Confirm"),
+              content: const Text("Delete this result?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text("Delete"),
+                ),
+              ],
             ),
+          );
+        },
+        onDismissed: (_) async {
+          await Provider.of<ResultProvider>(context, listen: false)
+              .removeResult(result.participant.bibNumber);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Deleted result of bib ${result.participant.bibNumber}')),
+          );
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF7986CB),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Center(child: Text(rank, style: const TextStyle(color: Colors.white, fontSize: 14))),
+              ),
+              Expanded(
+                child: Center(child: Text(result.participant.bibNumber, style: const TextStyle(color: Colors.white, fontSize: 14))),
+              ),
+              Expanded(
+                child: Center(child: Text(result.participant.name, style: const TextStyle(color: Colors.white, fontSize: 14))),
+              ),
+              Expanded(
+                child: Center(child: Text(result.finishTime, style: const TextStyle(color: Colors.white, fontSize: 14))),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  ),
+),
+
           ],
         );
       },

@@ -1,4 +1,4 @@
-// lib/widgets/race_status_widget.dart
+// lib/home/race_status_widget.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/notification_provider.dart';

@@ -1,3 +1,5 @@
+// lib/dtos/race_dto.dart
+
 import '../model/race_model.dart';
 
 class RaceDTO {
@@ -8,7 +10,7 @@ class RaceDTO {
   final String time;
 
   RaceDTO({
-    required this.name,
+        required this.name,
     required this.raceType,
     required this.distance,
     required this.date,

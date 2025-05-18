@@ -1,3 +1,4 @@
+// lib/dtos/participant_dto.dart
 import '../model/participant_model.dart';
 
 class ParticipantDTO {
@@ -63,3 +64,4 @@ class ParticipantDTO {
 
   
 }
+

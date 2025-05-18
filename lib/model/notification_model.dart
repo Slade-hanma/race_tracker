@@ -1,4 +1,4 @@
-// lib/models/app_notification.dart
+// lib/models/notification_model.dart
 class AppNotification {
   final String id;
   final String message;

@@ -1,4 +1,4 @@
-//
+// lib/models/participant_model.dart
 
 class Participant {
   final int id;

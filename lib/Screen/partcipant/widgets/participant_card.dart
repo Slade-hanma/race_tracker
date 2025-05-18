@@ -1,3 +1,6 @@
+// lib/screen/participant/wodgets/participant_card.dart
+
+
 import 'package:flutter/material.dart';
 import '../../../../model/participant_model.dart';
 import 'package:intl/intl.dart';

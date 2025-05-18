@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class FirebaseBaseRepo {
-  static const String baseUrl = 'https://race-tracker-c94f0-default-rtdb.asia-southeast1.firebasedatabase.app/';
+  static const String baseUrl = 'https://race-tracking-app-c2e54-default-rtdb.asia-southeast1.firebasedatabase.app/';
 
   Future<http.Response> get(String path) {
     return http.get(Uri.parse('$baseUrl/$path.json'));  // .json should only be appended here

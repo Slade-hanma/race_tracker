@@ -1,3 +1,5 @@
+// lib/models/race_status_enum.dart
+
 import 'package:flutter/material.dart';
 
 enum RaceStatus {
