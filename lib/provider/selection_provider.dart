@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../Screen/tracking/participant_tracking_screen.dart';
+import '../model/activity_type.dart';
 import '../model/result_model.dart';
 
 class SelectionProvider extends ChangeNotifier {
-  // Map bibNumber to Result
   final Map<String, Result> _participantResults = {};
 
   List<Result> get selectedResults => _participantResults.values.toList();
@@ -25,7 +24,18 @@ class SelectionProvider extends ChangeNotifier {
   }
 
   void setResult(String bibNumber, Result result) {
-    _participantResults[bibNumber] = result;
+  result.finishTime = _sumTimes(
+    result.swimmingTime,
+    result.bikingTime,
+    result.runningTime,
+  );
+  _participantResults[bibNumber] = result;
+  notifyListeners();
+}
+
+
+  void addActivity(String bibNumber, ActivityType activityType) {
+    // Optional method: you can add custom logic here if needed.
     notifyListeners();
   }
 
@@ -54,11 +64,6 @@ class SelectionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addActivity(String bibNumber, ActivityType activityType) {
-    // Optional method: you can add custom logic here if needed.
-    notifyListeners();
-  }
-
   void toggleResult(Result result, ActivityType activityType) {
     final bib = result.participant.bibNumber;
     final current = _participantResults[bib];
@@ -75,6 +80,8 @@ class SelectionProvider extends ChangeNotifier {
           current.runningTime = result.runningTime;
           break;
       }
+
+      // Sum all times
       current.finishTime = _sumTimes(
         current.swimmingTime,
         current.bikingTime,
@@ -87,19 +94,20 @@ class SelectionProvider extends ChangeNotifier {
         swimmingTime: activityType == ActivityType.swimming ? result.swimmingTime : "00:00:00.000",
         bikingTime: activityType == ActivityType.biking ? result.bikingTime : "00:00:00.000",
         runningTime: activityType == ActivityType.running ? result.runningTime : "00:00:00.000",
-        finishTime: "00:00:00.000",
+        finishTime: "00:00:00.000", // will update below
       );
+
       newResult.finishTime = _sumTimes(
         newResult.swimmingTime,
         newResult.bikingTime,
         newResult.runningTime,
       );
+
       _participantResults[bib] = newResult;
     }
 
     notifyListeners();
   }
-
 
   String _sumTimes(String s1, String s2, String s3) {
     final d1 = _parseDuration(s1);
@@ -115,12 +123,16 @@ class SelectionProvider extends ChangeNotifier {
   }
 
   Duration _parseDuration(String time) {
-    final parts = time.split(':');
-    final h = int.parse(parts[0]);
-    final m = int.parse(parts[1]);
-    final sAndMs = parts[2].split('.');
-    final s = int.parse(sAndMs[0]);
-    final ms = int.parse(sAndMs[1]);
-    return Duration(hours: h, minutes: m, seconds: s, milliseconds: ms);
+    try {
+      final parts = time.split(':');
+      final h = int.parse(parts[0]);
+      final m = int.parse(parts[1]);
+      final sAndMs = parts[2].split('.');
+      final s = int.parse(sAndMs[0]);
+      final ms = int.parse(sAndMs[1]);
+      return Duration(hours: h, minutes: m, seconds: s, milliseconds: ms);
+    } catch (e) {
+      return Duration.zero;
+    }
   }
 }

@@ -1,11 +1,11 @@
-// lib/screen/participant/wodgets/participant_profile.dart
-
-
 import 'package:flutter/material.dart';
-import '../../../model/participant_model.dart';
-import 'participantform.dart';
-import '../../../provider/participant_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../../../model/participant_model.dart';
+import '../../../model/result_model.dart';
+import '../../../provider/participant_provider.dart';
+import '../../../provider/result_provider.dart';
+import 'participantform.dart';
 
 class ParticipantProfileScreen extends StatelessWidget {
   final Participant participant;
@@ -15,8 +15,16 @@ class ParticipantProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final participantProvider =
-        Provider.of<ParticipantProvider>(context, listen: false);
+    final participantProvider = Provider.of<ParticipantProvider>(context, listen: false);
+
+    // Access ResultProvider
+    final resultProvider = Provider.of<ResultProvider>(context);
+    // Find result for this participant (assumes unique bibNumber)
+    final Result? participantResult = resultProvider.results
+    .where((result) => result.participant.bibNumber == participant.bibNumber)
+    .cast<Result?>()
+    .firstWhere((_) => true, orElse: () => null);
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -36,7 +44,7 @@ class ParticipantProfileScreen extends StatelessWidget {
                 const Text(
                   "Aquathons",
                   style: TextStyle(
-                    color: Colors.white, // changed to white
+                    color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
@@ -61,7 +69,7 @@ class ParticipantProfileScreen extends StatelessWidget {
                   child: const Text(
                     "Edit",
                     style: TextStyle(
-                      color: Colors.white, // changed to white
+                      color: Colors.white,
                       fontSize: 16,
                     ),
                   ),
@@ -70,7 +78,7 @@ class ParticipantProfileScreen extends StatelessWidget {
             ),
           ),
 
-          // Participant info layout
+          // Participant info and activity times layout
           Expanded(
             child: Center(
               child: Container(
@@ -111,6 +119,32 @@ class ParticipantProfileScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 24),
+
+                    // Display race type and name if result exists
+                    if (participantResult != null) ...[
+                      Text(
+                        "Race: ${participantResult.race.raceType}",
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Date: ${participantResult.race.date}",
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Activity times
+                      _buildActivityTimeRow("Swimming", participantResult.swimmingTime),
+                      const SizedBox(height: 8),
+                      _buildActivityTimeRow("Biking", participantResult.bikingTime),
+                      const SizedBox(height: 8),
+                      _buildActivityTimeRow("Running", participantResult.runningTime),
+                      const SizedBox(height: 8),
+                      Divider(),
+                      _buildActivityTimeRow("Finish Time", participantResult.finishTime, isFinish: true),
+                    ],
+
                     const Spacer(),
                     SizedBox(
                       width: double.infinity,
@@ -127,7 +161,7 @@ class ParticipantProfileScreen extends StatelessWidget {
                           "Back",
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white, // changed to white
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -170,11 +204,35 @@ class ParticipantProfileScreen extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black, // changed to black for readability
+                    color: Colors.black,
                   ),
                 ),
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActivityTimeRow(String activity, String time, {bool isFinish = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          activity,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: isFinish ? FontWeight.bold : FontWeight.normal,
+            color: isFinish ? Colors.blueAccent : Colors.black87,
+          ),
+        ),
+        Text(
+          time,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: isFinish ? FontWeight.bold : FontWeight.normal,
+            color: isFinish ? Colors.blueAccent : Colors.black87,
           ),
         ),
       ],

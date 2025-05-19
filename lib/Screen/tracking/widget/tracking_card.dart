@@ -1,95 +1,181 @@
-// lib/screen/tracking/widgets/tracking_card.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../model/activity_type.dart';
 import '../../../model/participant_model.dart';
 import '../../../model/race_model.dart';
 import '../../../model/result_model.dart';
-import 'time_display.dart';
-import '../../../provider/stopwatch_provider.dart';
 import '../../../provider/selection_provider.dart';
+import '../../../provider/stopwatch_provider.dart';
 
 class ParticipantTrackingCard extends StatelessWidget {
   final Participant participant;
   final Race race;
-  final StopwatchProvider stopwatchProvider;
+  final ActivityType activityType;
 
   const ParticipantTrackingCard({
     Key? key,
     required this.participant,
     required this.race,
-    required this.stopwatchProvider,
+    required this.activityType,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final stopwatchProvider = context.watch<StopwatchProvider>();
     final selectionProvider = context.watch<SelectionProvider>();
-    final currentTime = stopwatchProvider.displayTime;
 
-    final isSelected = selectionProvider.isSelected(participant.bibNumber);
-    final result = selectionProvider.getResult(participant.bibNumber);
+    return Consumer<StopwatchProvider>(
+      builder: (context, stopwatchProvider, _) {
+        final savedResult = selectionProvider.getResult(participant.bibNumber);
 
-    return GestureDetector(
+        String savedTime;
+        switch (activityType) {
+          case ActivityType.swimming:
+            savedTime = savedResult?.swimmingTime ?? "00:00:00.000";
+            break;
+          case ActivityType.biking:
+            savedTime = savedResult?.bikingTime ?? "00:00:00.000";
+            break;
+          case ActivityType.running:
+            savedTime = savedResult?.runningTime ?? "00:00:00.000";
+            break;
+        }
 
-      onTap: () {
-        final result = Result(
-          participant: participant,
-          race: race,
-          finishTime: currentTime,
-          swimmingTime: "00:00:00.000",
-          bikingTime: "00:00:00.000",
-          runningTime: "00:00:00.000",
+        final hasSavedTime = savedTime != "00:00:00.000";
+        final displayTime = hasSavedTime ? savedTime : stopwatchProvider.displayTime;
+
+        final isSelected = selectionProvider.isSelected(participant.bibNumber, activityType);
+
+        return GestureDetector(
+          onTap: () {
+            final selectionProvider = context.read<SelectionProvider>();
+            final stopwatchProvider = context.read<StopwatchProvider>();
+
+            final oldResult = selectionProvider.getResult(participant.bibNumber);
+
+            String swimming = oldResult?.swimmingTime ?? "00:00:00.000";
+            String biking = oldResult?.bikingTime ?? "00:00:00.000";
+            String running = oldResult?.runningTime ?? "00:00:00.000";
+
+            final savedTimeForActivity = (() {
+              switch (activityType) {
+                case ActivityType.swimming:
+                  return swimming;
+                case ActivityType.biking:
+                  return biking;
+                case ActivityType.running:
+                  return running;
+              }
+            })();
+
+            final hasSavedTime = savedTimeForActivity != "00:00:00.000";
+            final currentTime = stopwatchProvider.displayTime;
+
+            if (!hasSavedTime) {
+              switch (activityType) {
+                case ActivityType.swimming:
+                  swimming = currentTime;
+                  break;
+                case ActivityType.biking:
+                  biking = currentTime;
+                  break;
+                case ActivityType.running:
+                  running = currentTime;
+                  break;
+              }
+            } else {
+              switch (activityType) {
+                case ActivityType.swimming:
+                  swimming = "00:00:00.000";
+                  break;
+                case ActivityType.biking:
+                  biking = "00:00:00.000";
+                  break;
+                case ActivityType.running:
+                  running = "00:00:00.000";
+                  break;
+              }
+            }
+
+            final updatedResult = Result(
+              participant: participant,
+              race: race,
+              swimmingTime: swimming,
+              bikingTime: biking,
+              runningTime: running,
+              finishTime: "00:00:00.000", // Temporary, will be recalculated by SelectionProvider if needed
+            );
+
+            selectionProvider.setResult(participant.bibNumber, updatedResult);
+
+            if (!hasSavedTime) {
+              selectionProvider.addActivity(participant.bibNumber, activityType);
+            } else {
+              selectionProvider.removeActivity(participant.bibNumber, activityType);
+            }
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            width: 250,
+            height: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            margin: const EdgeInsets.symmetric(vertical: 4),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? const Color(0xFF1E88E5)
+                  : const Color(0xFF5B6FC2),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  offset: Offset(0, 2),
+                  blurRadius: 4,
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                const SizedBox(width: 16),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        participant.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        participant.school,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  displayTime,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: "RobotoMono",
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
-        context.read<SelectionProvider>().toggleResult(result);
       },
-
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: 250,
-        height: 10,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? const Color(0xFF1E88E5) // Blue when selected
-                  : const Color(0xFF5B6FC2), // Default background
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0, 2),
-              blurRadius: 4,
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min, // keeps it compact
-          children: [
-            Text(
-              '${participant.bibNumber}',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Center(
-              child: TimeDisplay(
-                time:
-                    isSelected && result != null
-                        ? result.finishTime
-                        : currentTime,
-                                      ),
-            ),
-          ],
-        ),
-      ),
     );
-
-
   }
 }
