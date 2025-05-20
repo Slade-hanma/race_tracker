@@ -1,6 +1,5 @@
 // lib/screen/participant/wodgets/list_participant_view.dart
 
-
 import 'package:flutter/material.dart';
 import '../../model/participant_model.dart';
 import 'widgets/participant_card.dart';
@@ -20,26 +19,38 @@ class _ListScreenState extends State<ListScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchParticipantsFuture = Provider.of<ParticipantProvider>(context, listen: false).fetchParticipants();
+    _fetchParticipantsFuture =
+        Provider.of<ParticipantProvider>(
+          context,
+          listen: false,
+        ).fetchParticipants();
   }
 
-  void _confirmDelete(BuildContext context, Participant participant, ParticipantProvider provider) {
+  void _confirmDelete(
+    BuildContext context,
+    Participant participant,
+    ParticipantProvider provider,
+  ) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Delete Participant"),
-        content: Text("Are you sure you want to delete this participant?"),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text("Cancel")),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              provider.deleteParticipant(participant.id);
-            },
-            child: Text("Delete", style: TextStyle(color: Colors.red)),
+      builder:
+          (context) => AlertDialog(
+            title: Text("Delete Participant"),
+            content: Text("Are you sure you want to delete this participant?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  provider.deleteParticipant(participant.id);
+                },
+                child: Text("Delete", style: TextStyle(color: Colors.red)),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -49,30 +60,40 @@ class _ListScreenState extends State<ListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-         automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false,
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF64B5F6),
+                backgroundColor: const Color(0xFF5C6BC0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 16),
               ),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => ParticipantForm(
-                    isEditing: false,
-                    onSubmit: participantProvider.addParticipant,
-                    participantProvider: participantProvider,
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (_) => ParticipantForm(
+                          isEditing: false,
+                          onSubmit: participantProvider.addParticipant,
+                          participantProvider: participantProvider,
+                        ),
                   ),
-                ));
+                );
               },
-              child: Text(
-                'Add',
-                style: TextStyle(color: Colors.white),
+              child: Row(
+                children: [
+                  Icon(Icons.add, color: Colors.white),
+                  SizedBox(width: 8),
+                  Text(
+                    "Add Participant",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
             ),
           ),
@@ -110,7 +131,10 @@ class _ListScreenState extends State<ListScreen> {
                     final updatedParticipant = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ParticipantProfileScreen(participant: participant),
+                        builder:
+                            (_) => ParticipantProfileScreen(
+                              participant: participant,
+                            ),
                       ),
                     );
                     if (updatedParticipant != null) {

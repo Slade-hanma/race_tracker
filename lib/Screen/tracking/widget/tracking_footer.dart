@@ -5,7 +5,6 @@ import '../../../provider/result_provider.dart';
 import '../../../provider/selection_provider.dart';
 import '../../../provider/stopwatch_provider.dart';
 
-
 class SubmitFooter extends StatelessWidget {
   const SubmitFooter({Key? key}) : super(key: key);
 
@@ -20,21 +19,22 @@ class SubmitFooter extends StatelessWidget {
 
     notificationProvider.addNotification('Race results have been submitted.');
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Submitted to result list")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Submitted to result list")));
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedCount = context.watch<SelectionProvider>().selectedResults.length;
+    final selectedCount =
+        context.watch<SelectionProvider>().selectedResults.length;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (selectedCount > 0)
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(0),
             child: Text("$selectedCount participants selected"),
           ),
         Container(

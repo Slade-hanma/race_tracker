@@ -1,6 +1,5 @@
 // lib/screen/stopwatch/stopwatch.dart
 
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/stopwatch_provider.dart';
@@ -25,11 +24,11 @@ class StopwatchWidget extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.sports,
-                  size: 80,
-                  color: Colors.white,
-                ),
+                // Icon(
+                //   Icons.pool,
+                //   size: 80,
+                //   color: Colors.white,
+                // ),
                 SizedBox(height: 10),
                 Text(
                   provider.displayTime,
@@ -59,10 +58,7 @@ class StopwatchWidget extends StatelessWidget {
               ),
               child: Text(
                 'Start',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             )
           else
@@ -72,7 +68,12 @@ class StopwatchWidget extends StatelessWidget {
                 ElevatedButton(
                   onPressed: provider.reset,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 67, 108, 185).withOpacity(0.5),
+                    backgroundColor: Color.fromARGB(
+                      255,
+                      67,
+                      108,
+                      185,
+                    ).withOpacity(0.5),
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     textStyle: TextStyle(fontSize: 16),
                     minimumSize: Size(150, 60), // Added minimum size
