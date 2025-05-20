@@ -24,15 +24,7 @@ class RaceTracker extends StatelessWidget {
             "Race Tracker",
             style: TextStyle(color: Colors.white),
           ),
-          bottom: TabBar(
-            labelColor: Colors.white, // selected tab text/icon color
-            unselectedLabelColor: Colors.white, // unselected tab has no color
-            indicatorColor: Colors.white, // underline for selected tab
-            tabs: const [
-              Tab(icon: Icon(Icons.track_changes), text: "Tracking"),
-              Tab(icon: Icon(Icons.list), text: "Results"),
-            ],
-          ),
+
         ),
         body: TabBarView(
           children: [

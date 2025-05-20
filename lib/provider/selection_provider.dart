@@ -24,18 +24,17 @@ class SelectionProvider extends ChangeNotifier {
   }
 
   void setResult(String bibNumber, Result result) {
-  result.finishTime = _sumTimes(
-    result.swimmingTime,
-    result.bikingTime,
-    result.runningTime,
-  );
-  _participantResults[bibNumber] = result;
-  notifyListeners();
-}
+    result.finishTime = _sumTimes(
+      result.swimmingTime,
+      result.bikingTime,
+      result.runningTime,
+    );
+    _participantResults[bibNumber] = result;
+    notifyListeners();
+  }
 
 
   void addActivity(String bibNumber, ActivityType activityType) {
-    // Optional method: you can add custom logic here if needed.
     notifyListeners();
   }
 

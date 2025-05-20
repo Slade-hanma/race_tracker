@@ -48,72 +48,74 @@ class ParticipantTrackingCard extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            final selectionProvider = context.read<SelectionProvider>();
-            final stopwatchProvider = context.read<StopwatchProvider>();
+  final selectionProvider = context.read<SelectionProvider>();
+  final stopwatchProvider = context.read<StopwatchProvider>();
 
-            final oldResult = selectionProvider.getResult(participant.bibNumber);
+  final oldResult = selectionProvider.getResult(participant.bibNumber);
 
-            String swimming = oldResult?.swimmingTime ?? "00:00:00.000";
-            String biking = oldResult?.bikingTime ?? "00:00:00.000";
-            String running = oldResult?.runningTime ?? "00:00:00.000";
+  String swimming = oldResult?.swimmingTime ?? "00:00:00.000";
+  String biking = oldResult?.bikingTime ?? "00:00:00.000";
+  String running = oldResult?.runningTime ?? "00:00:00.000";
 
-            final savedTimeForActivity = (() {
-              switch (activityType) {
-                case ActivityType.swimming:
-                  return swimming;
-                case ActivityType.biking:
-                  return biking;
-                case ActivityType.running:
-                  return running;
-              }
-            })();
+  final savedTimeForActivity = (() {
+    switch (activityType) {
+      case ActivityType.swimming:
+        return swimming;
+      case ActivityType.biking:
+        return biking;
+      case ActivityType.running:
+        return running;
+    }
+  })();
 
-            final hasSavedTime = savedTimeForActivity != "00:00:00.000";
-            final currentTime = stopwatchProvider.displayTime;
+  final hasSavedTime = savedTimeForActivity != "00:00:00.000";
+  final currentTime = stopwatchProvider.displayTime;
 
-            if (!hasSavedTime) {
-              switch (activityType) {
-                case ActivityType.swimming:
-                  swimming = currentTime;
-                  break;
-                case ActivityType.biking:
-                  biking = currentTime;
-                  break;
-                case ActivityType.running:
-                  running = currentTime;
-                  break;
-              }
-            } else {
-              switch (activityType) {
-                case ActivityType.swimming:
-                  swimming = "00:00:00.000";
-                  break;
-                case ActivityType.biking:
-                  biking = "00:00:00.000";
-                  break;
-                case ActivityType.running:
-                  running = "00:00:00.000";
-                  break;
-              }
-            }
+  if (!hasSavedTime) {
+    switch (activityType) {
+      case ActivityType.swimming:
+        swimming = currentTime;
+        break;
+      case ActivityType.biking:
+        biking = currentTime;
+        break;
+      case ActivityType.running:
+        running = currentTime;
+        break;
+    }
+  } else {
+    switch (activityType) {
+      case ActivityType.swimming:
+        swimming = "00:00:00.000";
+        break;
+      case ActivityType.biking:
+        biking = "00:00:00.000";
+        break;
+      case ActivityType.running:
+        running = "00:00:00.000";
+        break;
+    }
+  }
 
-            final updatedResult = Result(
-              participant: participant,
-              race: race,
-              swimmingTime: swimming,
-              bikingTime: biking,
-              runningTime: running,
-              finishTime: "00:00:00.000", // Temporary, will be recalculated by SelectionProvider if needed
-            );
+  final updatedResult = Result(
+    participant: participant,
+    race: race,
+    swimmingTime: swimming,
+    bikingTime: biking,
+    runningTime: running,
+    finishTime: "00:00:00.000", // Temporary, will be recalculated by SelectionProvider if needed
+  );
 
-            selectionProvider.setResult(participant.bibNumber, updatedResult);
+  // Here is the only changed line:
+  selectionProvider.toggleResult(updatedResult, activityType);
 
-            if (!hasSavedTime) {
-              selectionProvider.addActivity(participant.bibNumber, activityType);
-            } else {
-              selectionProvider.removeActivity(participant.bibNumber, activityType);
-            }
-          },
+  if (!hasSavedTime) {
+    selectionProvider.addActivity(participant.bibNumber, activityType);
+  } else {
+    selectionProvider.removeActivity(participant.bibNumber, activityType);
+  }
+},
+
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             width: 250,

@@ -18,10 +18,7 @@ class RacesListView extends StatelessWidget {
     final raceProvider = Provider.of<RaceProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Races'),
-        backgroundColor: Color(0xFF5B6FC2),
-      ),
+
       body: FutureBuilder<List<Race>>(
         future: raceProvider.races,
         builder: (context, snapshot) {
